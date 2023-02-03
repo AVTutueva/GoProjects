@@ -10,6 +10,7 @@ import (
 
 func ReadObjectNumber(object_title string) int64 {
 
+	// print welcome message
 	switch {
 	case object_title == "layer":
 		fmt.Printf("How many %ss are you going to paint?: ", object_title)

@@ -5,24 +5,28 @@ import (
 )
 
 func Scenario() {
-	println()
+
 	fmt.Print("Welcome to the paint calculator! I'll ask a few questions to help you.\n")
 
-	walls := ReadObjectNumber("wall")
-	wall_sizes := ReadRectangularObjectInfo(walls, "wall")
+	// ask about walls
+	object_title := "wall"
+	walls := ReadObjectNumber(object_title)
+	wall_size := ReadRectangularObjectInfo(walls, object_title)
 
-	fmt.Print("Thanks! How many windows do you have?.\n")
-	windows := ReadObjectNumber("window")
-	windows_sizes := ReadRectangularObjectInfo(windows, "window")
+	// ask about windows
+	object_title = "window"
+	windows := ReadObjectNumber(object_title)
+	windows_size := ReadRectangularObjectInfo(windows, object_title)
 
-	fmt.Print("Thanks! How many doors do you have?.\n")
-	doors := ReadObjectNumber("door")
-	doors_sizes := ReadRectangularObjectInfo(doors, "door")
+	// ask about doors
+	object_title = "door"
+	doors := ReadObjectNumber(object_title)
+	doors_size := ReadRectangularObjectInfo(doors, object_title)
 
-	square := CalculateSquareToPaint(wall_sizes, windows_sizes, doors_sizes)
+	square := CalculateSquareToPaint(wall_size, windows_size, doors_size)
 
 	if square <= 0 {
-		fmt.Print("I can't calculate the costs because the area of surfaces to be painted is less than 0. Please, restart the program.\n")
+		fmt.Print("I can't calculate the costs because the area of surfaces to be painted is less than 0. Please, restart the program and try again.\n")
 	} else {
 		fmt.Print("Great! Now tell me about the paint. What is paint consumption (kg/m2)?\n")
 		consumption := ReadFloatObject("consumption")
