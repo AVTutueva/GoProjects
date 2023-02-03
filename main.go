@@ -5,6 +5,5 @@ import (
 )
 
 func main() {
-	// main func
 	painter_calculator.Scenario()
 }
