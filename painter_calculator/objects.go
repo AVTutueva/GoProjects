@@ -43,7 +43,7 @@ func ReadObjectNumber(object_title string) int64 {
 		}
 	}
 
-	fmt.Print("\nWonderful, thank you!\n")
+	fmt.Print("Wonderful, thank you!\n")
 	println()
 	return objects
 }
@@ -86,7 +86,6 @@ func ReadRectangularObjectInfo(objects_number int64, object_title string) []floa
 
 		}
 	}
-	println()
 	return object_size
 }
 
@@ -116,6 +115,5 @@ func ReadFloatObject(object_title string) float64 {
 			break
 		}
 	}
-	println()
 	return float_value
 }
