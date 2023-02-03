@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
+// function for number of objects
 func ReadObjectNumber(object_title string) int64 {
-
 	// print welcome message
 	switch {
 	case object_title == "layer":
@@ -19,9 +19,9 @@ func ReadObjectNumber(object_title string) int64 {
 	}
 
 	var objects int64
-
 	error_message := "The number of " + object_title + "s is incorrect. Try again, please\n"
 
+	// read the size
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -48,6 +48,7 @@ func ReadObjectNumber(object_title string) int64 {
 	return objects
 }
 
+// function for reading 2 float type dimensions
 func ReadRectangularObjectInfo(objects_number int64, object_title string) []float64 {
 	if objects_number == 0 {
 		return []float64{}
@@ -59,12 +60,14 @@ func ReadRectangularObjectInfo(objects_number int64, object_title string) []floa
 
 	error_message := "The sizes are incorrect. Try again, please\n"
 
-	for i := int64(1); i <= objects_number; i++ { // loop by objects
+	// loop by objects
+	for i := int64(1); i <= objects_number; i++ {
 		fmt.Printf("Width and height of %s %d in m: ", object_title, i)
 
+		// read two numbers as dimensions and check them
 		scanner := bufio.NewScanner(os.Stdin)
-
 		for scanner.Scan() {
+
 			line := scanner.Text()
 			sizes := strings.Split(line, " ")
 
