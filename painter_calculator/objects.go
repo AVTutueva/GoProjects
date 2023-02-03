@@ -91,6 +91,7 @@ func ReadRectangularObjectInfo(objects_number int64, object_title string) []floa
 
 func ReadFloatObject(object_title string) float64 {
 
+	// one more comment
 	var float_value float64
 	fmt.Printf("Please enter the value of %s: ", object_title)
 
