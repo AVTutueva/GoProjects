@@ -26,12 +26,13 @@ func Scenario() {
 		fmt.Print("I can't calculate the costs because the area of surfaces to be painted is less than 0. Please, restart the program and try again.\n")
 	} else {
 		// ask details about paint
-		fmt.Print("Great! Now tell me about the paint. What is paint consumption (kg/m2)? \n")
+		fmt.Print("Great! Now tell me about the paint. What is paint consumption (kg/m2)?\n")
 		consumption := ReadFloatObject("consumption")
 
-		fmt.Print("What price (kg)? ")
+		fmt.Print("What is the price (kg)?\n")
 		price := ReadFloatObject("price")
 
+		fmt.Print("What is the number of layers??\n")
 		layer := ReadObjectNumber("layer")
 
 		kg, costs := CalculateCosts(square, consumption, price, layer)
