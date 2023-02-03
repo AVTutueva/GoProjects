@@ -8,22 +8,20 @@ func Scenario() {
 
 	fmt.Print("Welcome to the paint calculator! I'll ask a few questions to help you.\n")
 
-	// ask about walls
-	object_title := "wall"
-	walls := ReadObjectNumber(object_title)
-	wall_size := ReadRectangularObjectInfo(walls, object_title)
+	objects := []string{"wall", "window", "door"}
 
-	// ask about windows
-	object_title = "window"
-	windows := ReadObjectNumber(object_title)
-	windows_size := ReadRectangularObjectInfo(windows, object_title)
+	object_quantity := make(map[string]int64)
+	object_sizes := make(map[string][]float64)
 
-	// ask about doors
-	object_title = "door"
-	doors := ReadObjectNumber(object_title)
-	doors_size := ReadRectangularObjectInfo(doors, object_title)
+	// read info about objects
+	for _, object := range objects {
+		object_quantity[object] = ReadObjectNumber(object)
+		object_sizes[object] = ReadRectangularObjectInfo(object_quantity[object], object)
+	}
 
-	square := CalculateSquareToPaint(wall_size, windows_size, doors_size)
+	square := CalculateSquareToPaint(object_sizes["wall"], object_sizes["windows"], object_sizes["doors"])
+
+	///////////////////////////////////////////////////////
 
 	if square <= 0 {
 		fmt.Print("I can't calculate the costs because the area of surfaces to be painted is less than 0. Please, restart the program and try again.\n")
@@ -37,7 +35,7 @@ func Scenario() {
 		layer := ReadObjectNumber("layer")
 
 		kg, costs := CalculateCosts(square, consumption, price, layer)
-		fmt.Printf("To paint %d walls with %d windows and %d doors you will need %.f kg of paint, with total costs of %.2f", walls, windows, doors, kg, costs)
+		fmt.Printf("To paint %d walls with %d windows and %d doors you will need %.f kg of paint, with total costs of %.2f", int(object_quantity["wall"]), int(object_quantity["window"]), int(object_quantity["door"]), kg, costs)
 	}
 
 }
