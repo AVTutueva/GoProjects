@@ -6,22 +6,6 @@ import (
 
 func CalculateSquareToPaint(walls_size []float64, windows_size []float64, doors_size []float64) float64 {
 
-	// // calculate square of walls
-	// var square_to_paint float64
-	// for i := 0; i < len(walls_size); i = i + 2 {
-	// 	square_to_paint = square_to_paint + walls_size[i]*walls_size[i+1]
-	// }
-
-	// // calculate square of windows
-	// for i := 0; i < len(windows_size); i = i + 2 {
-	// 	square_to_paint = square_to_paint - windows_size[i]*windows_size[i+1]
-	// }
-
-	// // calculate square of doors
-	// for i := 0; i < len(doors_size); i = i + 2 {
-	// 	square_to_paint = square_to_paint - doors_size[i]*doors_size[i+1]
-	// }
-
 	return CalculateRectangularSquares(walls_size) - CalculateRectangularSquares(windows_size) - CalculateRectangularSquares(doors_size)
 }
 

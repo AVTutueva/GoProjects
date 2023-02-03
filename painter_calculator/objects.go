@@ -91,18 +91,26 @@ func ReadRectangularObjectInfo(objects_number int64, object_title string) []floa
 
 func ReadFloatObject(object_title string) float64 {
 
-	// one more comment
+	// result variable
 	var float_value float64
-	fmt.Printf("Please enter the value of %s: ", object_title)
 
+	// messages for the user
+	error_message := "The value is incorrect. Try again, please\n"
+	welcome_message := "Please enter the value of " + object_title + ": "
+
+	fmt.Print(welcome_message)
+
+	// scan input
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
 		value, err := strconv.ParseFloat(line, 64)
-		if (err != nil) || (value <= 0) {
-			fmt.Print("The value is incorrect. Try again, please\n")
-			fmt.Printf("Please enter the value of %s: \n", object_title)
-		} else {
+
+		// values of consumption and price cannot be negative
+		if (err != nil) || (value <= 0) { // request inputs again
+			fmt.Print(error_message)
+			fmt.Print(welcome_message)
+		} else { // save and return value
 			float_value = value
 			break
 		}
