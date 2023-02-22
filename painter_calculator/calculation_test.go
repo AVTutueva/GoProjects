@@ -25,7 +25,7 @@ func TestCalculateRectangularSquares(t *testing.T) {
 	fmt.Println(got)
 
 	if !((got - 39) <= 0.000001) {
-		t.Errorf("CalculateRectangularSquares(3, 3, 6, 5) = %.2f, wanted 39", got)
+		t.Errorf("CalculateRectangularSquares(3, 3, 6, 5) = %.2f, wanted 39.00", got)
 	}
 }
 
@@ -33,8 +33,8 @@ func TestCalculateRectangularSquaresZeros(t *testing.T) {
 	input := []float64{0, 0, 0, 0}
 	got := CalculateRectangularSquares(input)
 
-	if !((0 - got) <= 0.000001) {
-		t.Errorf("CalculateRectangularSquares(0, 0, 0, 0) = %.2f, wanted 0", got)
+	if !(got <= 0.000001) {
+		t.Errorf("CalculateRectangularSquares(0, 0, 0, 0) = %.2f, wanted 0.00", got)
 	}
 }
 
@@ -43,6 +43,6 @@ func TestCalculateRectangularSquaresSeveralZeros(t *testing.T) {
 	got := CalculateRectangularSquares(input)
 
 	if !((2 - got) <= 0.000001) {
-		t.Errorf("CalculateRectangularSquares(1, 2, 0, 0) = %.2f, wanted 2", got)
+		t.Errorf("CalculateRectangularSquares(1, 2, 0, 0) = %.2f, wanted 2.00", got)
 	}
 }
