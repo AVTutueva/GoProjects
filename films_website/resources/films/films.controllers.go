@@ -46,20 +46,28 @@ func FilmByID(w http.ResponseWriter, r *http.Request) {
 
 func CreateFilm(w http.ResponseWriter, r *http.Request) {
 	var data FilmRequest
+	// check input data
 	if err := render.Bind(r, &data); err != nil {
 		render.Render(w, r, e.ErrInvalidRequest(err))
 	}
-
 	film := data.Film
 
+	// check that listed categories are exist in category table
+	for _, user_category := range film.Categories {
+
+		check_category := db.DB.Where("category_id = ? AND name = ?", user_category.CategoryId, user_category.Name).First(&user_category)
+		if check_category.Error != nil {
+			render.Render(w, r, e.ErrFilmDoesNotExist(check_category.Error))
+			return
+		}
+	}
+
+	// create film
 	result := db.DB.Create(film)
 	if result.Error != nil {
 		render.Render(w, r, e.ErrInvalidRequest(result.Error))
 		return
 	}
-
-	// set correct last update time
-	film.LastUpdate = time.Now()
 
 	render.Status(r, http.StatusCreated)
 	render.Render(w, r, NewFilmResponse(film))

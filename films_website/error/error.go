@@ -46,3 +46,12 @@ func ErrFilmDoesNotExist(err error) render.Renderer {
 		ErrorText:      err.Error(),
 	}
 }
+
+func ErrFilmDoesNotMatchCategory(err error) render.Renderer {
+	return &ErrResponse{
+		Err:            err,
+		HTTPStatusCode: 400,
+		StatusText:     "Such film category does not exist",
+		ErrorText:      err.Error(),
+	}
+}

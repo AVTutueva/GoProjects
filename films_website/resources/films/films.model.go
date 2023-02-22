@@ -10,19 +10,19 @@ import (
 )
 
 type Film struct {
-	FilmId             int        `gorm:"type:smallint;primaryKey"`
-	Title              string     `gorm:"type:varchar(128)"`
+	FilmId             int        `gorm:"column:film_id;primaryKey;autoIncrement"`
+	Title              string     `gorm:"type:varchar(128);not null"`
 	Description        string     `gorm:"type:text"`
 	ReleaseYear        int        `gorm:"type:year"`
-	LanguageId         int        `gorm:"type:tinyint;default:null"`
+	LanguageId         int        `gorm:"type:tinyint;not null"`
 	OriginalLanguageId int        `gorm:"type:tinyint;default:null"`
-	RentalDuration     int        `gorm:"type:tinyint"`
+	RentalDuration     float64    `gorm:"type:tinyint;not null;default:4.99"`
 	RentalRate         float64    `gorm:"type:decimal(4,2);"`
 	Length             int        `gorm:"type:smallint"`
-	ReplacementCost    float64    `gorm:"type:decimal(5,2)"`
-	Rating             string     `gorm:"type:enum('G','PG','PG-13','R','NC-17')"`
+	ReplacementCost    float64    `gorm:"type:decimal(5,2);noy null;default:19.99"`
+	Rating             string     `gorm:"type:enum('G','PG','PG-13','R','NC-17');default:'G'"`
 	SpecialFeatures    string     `gorm:"type:set('Trailers','Commentaries','Deleted Scenes','Behind the Scenes')"`
-	LastUpdate         time.Time  `gorm:"type:timestamp"`
+	LastUpdate         time.Time  `gorm:"autoCreateTime"`
 	Categories         []Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;constraint:onDelete:CASCADE;onUpdate:CASCADE;"`
 	// constraint:onDelete:CASCADE;onUpdate:CASCADE
 	// Categories         []Category `gorm:"foreignKey:CategoryId"`
@@ -37,9 +37,9 @@ func (Film) TableName() string {
 }
 
 type Category struct {
-	CategoryId int       `gorm:"type:tinyint;primaryKey"`
+	CategoryId int       `gorm:"column:category_id;primaryKey;autoIncrement"`
 	Name       string    `gorm:"type:varchar(25)"`
-	LastUpdate time.Time `gorm:"type:timestamp"`
+	LastUpdate time.Time `gorm:"autoCreateTime"`
 	// Films      []*Film   `gorm:"many2many:film_category"`
 	//  `gorm:"many2many:film_category;constraint:onDelete:CASCADE;"`
 }
@@ -49,8 +49,8 @@ func (Category) TableName() string {
 }
 
 type FilmCategory struct {
-	FilmId             int       `gorm:"type:tinyint;primaryKey"`
-	CategoryId         int       `gorm:"type:tinyint;primaryKey"`
+	FilmId             int       `gorm:"column:film_id;primaryKey"`
+	CategoryId         int       `gorm:"column:categoryid;primaryKey"`
 	LastUpdate         time.Time `gorm:"type:timestamp"`
 	FilmFilmId         int       `gorm:"type:tinyint"`
 	CategoryCategoryId int       `gorm:"type:tinyint"`
