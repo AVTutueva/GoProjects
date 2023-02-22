@@ -55,3 +55,12 @@ func ErrFilmDoesNotMatchCategory(err error) render.Renderer {
 		ErrorText:      err.Error(),
 	}
 }
+
+func ErrFilmIdMismatchUurl(err error) render.Renderer {
+	return &ErrResponse{
+		Err:            err,
+		HTTPStatusCode: 400,
+		StatusText:     "Film id and url do not match",
+		ErrorText:      err.Error(),
+	}
+}

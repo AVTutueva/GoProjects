@@ -8,6 +8,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+
+	"strconv"
 )
 
 func ListFilms(w http.ResponseWriter, r *http.Request) {
@@ -45,8 +47,8 @@ func FilmByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateFilm(w http.ResponseWriter, r *http.Request) {
-	var data FilmRequest
 	// check input data
+	var data FilmRequest
 	if err := render.Bind(r, &data); err != nil {
 		render.Render(w, r, e.ErrInvalidRequest(err))
 	}
@@ -54,13 +56,15 @@ func CreateFilm(w http.ResponseWriter, r *http.Request) {
 
 	// check that listed categories are exist in category table
 	for _, user_category := range film.Categories {
-
 		check_category := db.DB.Where("category_id = ? AND name = ?", user_category.CategoryId, user_category.Name).First(&user_category)
 		if check_category.Error != nil {
-			render.Render(w, r, e.ErrFilmDoesNotExist(check_category.Error))
+			render.Render(w, r, e.ErrFilmDoesNotMatchCategory(check_category.Error))
 			return
 		}
 	}
+
+	// set lastUpdate Field
+	film.LastUpdate = time.Now()
 
 	// create film
 	result := db.DB.Create(film)
@@ -74,6 +78,8 @@ func CreateFilm(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteById(w http.ResponseWriter, r *http.Request) {
+	// find the film to be deleted
+
 	id := chi.URLParam(r, "id")
 	var film *Film
 	result := db.DB.First(&film, id)
@@ -82,7 +88,26 @@ func DeleteById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db.DB.Delete(&film, id)
+	// find film_category relations
+	var film_by_category []FilmCategory
+	result_fc := db.DB.Where("film_id = ?", id).First(&film_by_category)
+	if result_fc.Error != nil {
+		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
+		println("error")
+		return
+	}
+	// remove associations
+	db.DB.Model(&film).Association("Categories").Clear()
+
+	// remove film_category pairs
+	result_del := db.DB.Delete(&film_by_category)
+	if result_del.Error != nil {
+		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
+		return
+	}
+
+	// remove films
+	db.DB.Delete(&film)
 	render.Render(w, r, NewFilmResponse(film))
 }
 
@@ -93,17 +118,27 @@ func UpdateById(w http.ResponseWriter, r *http.Request) {
 	var data FilmRequest
 	if err := render.Bind(r, &data); err != nil {
 		render.Render(w, r, e.ErrInvalidRequest(err))
+		return
 	}
 
 	// find the film in table
 	var updatedFilm *Film
-	result := db.DB.First(&updatedFilm, id)
+	result := db.DB.Where("film_id = ?", id).First(&updatedFilm)
+
 	if result.Error != nil {
 		render.Render(w, r, e.ErrFilmDoesNotExist(result.Error))
 		return
 	}
 
-	updatedFilm.FilmId = data.FilmId
+	// check that listed categories are exist in category table
+	for _, user_category := range data.Categories {
+		check_category := db.DB.Where("category_id = ? AND name = ?", user_category.CategoryId, user_category.Name).First(&user_category)
+		if check_category.Error != nil {
+			render.Render(w, r, e.ErrFilmDoesNotMatchCategory(check_category.Error))
+			return
+		}
+	}
+
 	updatedFilm.Title = data.Title
 	updatedFilm.Description = data.Description
 	updatedFilm.ReleaseYear = data.ReleaseYear
@@ -115,16 +150,15 @@ func UpdateById(w http.ResponseWriter, r *http.Request) {
 	updatedFilm.ReplacementCost = data.ReplacementCost
 	updatedFilm.Rating = data.Rating
 	updatedFilm.SpecialFeatures = data.SpecialFeatures
+	updatedFilm.Categories = data.Categories
+
+	url_id, _ := strconv.Atoi(id)
+	updatedFilm.FilmId = url_id
 	updatedFilm.LastUpdate = time.Now()
-	updatedFilm.Categories = data.Categories
 
-	// for i, _ := range data.Categories {
-	// 	updatedFilm.Categories[i].LastUpdate = time.Now()
-	// }
+	//db.DB.Save(&updatedFilm)
+	db.DB.Model(&updatedFilm).Preload("Categories").Save(&updatedFilm)
 
-	updatedFilm.Categories = data.Categories
-
-	db.DB.Save(&updatedFilm)
 	render.Render(w, r, NewFilmResponse(updatedFilm))
 }
 

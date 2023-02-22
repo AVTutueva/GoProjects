@@ -11,6 +11,7 @@ func main() {
 
 	database.DB.AutoMigrate(&films.Film{})
 	database.DB.AutoMigrate(&films.Category{})
+	database.DB.AutoMigrate(&films.FilmCategory{})
 
 	server.Init()
 
