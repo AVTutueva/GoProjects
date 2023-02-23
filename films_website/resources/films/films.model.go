@@ -26,15 +26,8 @@ type Film struct {
 	// Categories         []Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;constraint:onDelete:CASCADE;onUpdate:CASCADE;"`
 	Categories []Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;"`
 	//Categories []Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;"`
-
-	// constraint:onDelete:CASCADE;onUpdate:CASCADE
-	// Categories         []Category `gorm:"foreignKey:CategoryId"`
-	//Categories         []Category `gorm:"foreignKey:CategoryId;constraint:onDelete:CASCADE;"`
-	//Categories []Category `gorm:"many2many:film_category;"`
-	// Categories []*Category `gorm:"many2many:film_category;"`
 }
 
-// define the table know
 func (Film) TableName() string {
 	return "film"
 }
@@ -44,7 +37,6 @@ type Category struct {
 	Name       string    `gorm:"type:varchar(25)"`
 	LastUpdate time.Time `gorm:"autoCreateTime"`
 	// Films      []*Film   `gorm:"many2many:film_category"`
-	//  `gorm:"many2many:film_category;constraint:onDelete:CASCADE;"`
 }
 
 func (Category) TableName() string {
@@ -54,7 +46,7 @@ func (Category) TableName() string {
 type FilmCategory struct {
 	FilmId             int       `gorm:"column:film_id;primaryKey"`
 	CategoryId         int       `gorm:"column:categoryid;primaryKey"`
-	LastUpdate         time.Time `gorm:"type:timestamp"`
+	LastUpdate         time.Time `gorm:"autoUpdateTime"`
 	FilmFilmId         int       `gorm:"type:tinyint"`
 	CategoryCategoryId int       `gorm:"type:tinyint"`
 	FilmReferId        int       `gorm:"type:tinyint"`

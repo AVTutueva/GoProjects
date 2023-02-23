@@ -13,18 +13,9 @@ import (
 )
 
 func ListFilms(w http.ResponseWriter, r *http.Request) {
-	// var films []*Film
-	// result := db.DB.Find(&films)
-	// if result.Error != nil {
-	// 	render.Render(w, r, e.ErrEmptyTable(result.Error))
-	// 	return
-	// }
-	// render.RenderList(w, r, NewFilmListResponse(films))
-
 	var films []*Film
 
 	result := db.DB.Model(&Film{}).Preload("Categories").Find(&films)
-	// result := db.DB.Model(&Film{}).Preload(clause.Associations).Find(&films)
 
 	if result.Error != nil {
 		render.Render(w, r, e.ErrEmptyTable(result.Error))
@@ -137,6 +128,25 @@ func UpdateById(w http.ResponseWriter, r *http.Request) {
 			render.Render(w, r, e.ErrFilmDoesNotMatchCategory(check_category.Error))
 			return
 		}
+	}
+
+	// find old categories in film_categories
+	var film_by_category []FilmCategory
+	result_fc := db.DB.Where("film_id = ?", id).First(&film_by_category)
+	if result_fc.Error != nil {
+		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
+		println("error")
+		return
+	}
+
+	// remove associations
+	db.DB.Model(&updatedFilm).Association("Categories").Clear()
+
+	// remove film_category pairs
+	result_del := db.DB.Delete(&film_by_category)
+	if result_del.Error != nil {
+		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
+		return
 	}
 
 	updatedFilm.Title = data.Title
