@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/render"
 
 	"strconv"
+	filmcategory "tsi/films_website/resources/film_category"
 )
 
 func ListFilms(w http.ResponseWriter, r *http.Request) {
@@ -80,21 +81,24 @@ func DeleteById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// find film_category relations
-	var film_by_category []FilmCategory
+	var film_by_category []filmcategory.FilmCategory
 	result_fc := db.DB.Where("film_id = ?", id).First(&film_by_category)
-	if result_fc.Error != nil {
+	if result_fc.Error != nil && len(film.Categories) > 0 {
 		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
 		println("error")
 		return
 	}
-	// remove associations
-	db.DB.Model(&film).Association("Categories").Clear()
 
-	// remove film_category pairs
-	result_del := db.DB.Delete(&film_by_category)
-	if result_del.Error != nil {
-		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
-		return
+	if len(film.Categories) > 0 {
+		// remove associations
+		db.DB.Model(&film).Association("Categories").Clear()
+
+		// remove film_category pairs
+		result_del := db.DB.Delete(&film_by_category)
+		if result_del.Error != nil {
+			render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
+			return
+		}
 	}
 
 	// remove films
@@ -131,22 +135,23 @@ func UpdateById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// find old categories in film_categories
-	var film_by_category []FilmCategory
+	var film_by_category []filmcategory.FilmCategory
 	result_fc := db.DB.Where("film_id = ?", id).First(&film_by_category)
-	if result_fc.Error != nil {
+	if result_fc.Error != nil && len(film_by_category) > 0 {
 		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
-		println("error")
 		return
 	}
 
-	// remove associations
-	db.DB.Model(&updatedFilm).Association("Categories").Clear()
+	if len(film_by_category) > 0 {
+		// remove associations
+		db.DB.Model(&updatedFilm).Association("Categories").Clear()
 
-	// remove film_category pairs
-	result_del := db.DB.Delete(&film_by_category)
-	if result_del.Error != nil {
-		render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
-		return
+		// remove film_category pairs
+		result_del := db.DB.Delete(&film_by_category)
+		if result_del.Error != nil {
+			render.Render(w, r, e.ErrInvalidRequest(result_fc.Error))
+			return
+		}
 	}
 
 	updatedFilm.Title = data.Title

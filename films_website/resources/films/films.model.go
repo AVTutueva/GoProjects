@@ -6,56 +6,45 @@ import (
 	"strings"
 	"time"
 
+	"tsi/films_website/resources/categories"
+
 	"github.com/go-chi/render"
 )
 
 type Film struct {
-	FilmId             int       `gorm:"column:film_id;primaryKey"`
-	Title              string    `gorm:"type:varchar(128);not null"`
-	Description        string    `gorm:"type:text"`
-	ReleaseYear        int       `gorm:"type:year"`
-	LanguageId         int       `gorm:"type:tinyint;not null"`
-	OriginalLanguageId int       `gorm:"type:tinyint;default:null"`
-	RentalDuration     float64   `gorm:"type:tinyint;not null;default:4.99"`
-	RentalRate         float64   `gorm:"type:decimal(4,2);"`
-	Length             int       `gorm:"type:smallint"`
-	ReplacementCost    float64   `gorm:"type:decimal(5,2);noy null;default:19.99"`
-	Rating             string    `gorm:"type:enum('G','PG','PG-13','R','NC-17');default:'G'"`
-	SpecialFeatures    string    `gorm:"type:set('Trailers','Commentaries','Deleted Scenes','Behind the Scenes')"`
-	LastUpdate         time.Time `gorm:"autoCreateTime"`
-	// Categories         []Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;constraint:onDelete:CASCADE;onUpdate:CASCADE;"`
-	Categories []Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;"`
-	//Categories []Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;"`
+	FilmId             int                   `gorm:"column:film_id;primaryKey"`
+	Title              string                `gorm:"type:varchar(128);not null"`
+	Description        string                `gorm:"type:text"`
+	ReleaseYear        int                   `gorm:"type:year"`
+	LanguageId         int                   `gorm:"type:tinyint;not null"`
+	OriginalLanguageId int                   `gorm:"type:tinyint;default:null"`
+	RentalDuration     float64               `gorm:"type:tinyint;not null;default:4.99"`
+	RentalRate         float64               `gorm:"type:decimal(4,2);"`
+	Length             int                   `gorm:"type:smallint"`
+	ReplacementCost    float64               `gorm:"type:decimal(5,2);noy null;default:19.99"`
+	Rating             string                `gorm:"type:enum('G','PG','PG-13','R','NC-17');default:'G'"`
+	SpecialFeatures    string                `gorm:"type:set('Trailers','Commentaries','Deleted Scenes','Behind the Scenes')"`
+	LastUpdate         time.Time             `gorm:"autoCreateTime"`
+	Categories         []categories.Category `gorm:"many2many:film_category;foreignKey:FilmId;joinForeignKey:FilmId;References:CategoryId;joinReferences:CategoryId;"`
 }
 
 func (Film) TableName() string {
 	return "film"
 }
 
-type Category struct {
-	CategoryId int       `gorm:"column:category_id;primaryKey;autoIncrement"`
-	Name       string    `gorm:"type:varchar(25)"`
-	LastUpdate time.Time `gorm:"autoCreateTime"`
-	// Films      []*Film   `gorm:"many2many:film_category"`
-}
+// type FilmCategory struct {
+// 	FilmId             int       `gorm:"column:film_id;primaryKey"`
+// 	CategoryId         int       `gorm:"column:categoryid;primaryKey"`
+// 	LastUpdate         time.Time `gorm:"autoUpdateTime"`
+// 	FilmFilmId         int       `gorm:"type:tinyint"`
+// 	CategoryCategoryId int       `gorm:"type:tinyint"`
+// 	FilmReferId        int       `gorm:"type:tinyint"`
+// 	CategoryRefer      int       `gorm:"type:tinyint"`
+// }
 
-func (Category) TableName() string {
-	return "category"
-}
-
-type FilmCategory struct {
-	FilmId             int       `gorm:"column:film_id;primaryKey"`
-	CategoryId         int       `gorm:"column:categoryid;primaryKey"`
-	LastUpdate         time.Time `gorm:"autoUpdateTime"`
-	FilmFilmId         int       `gorm:"type:tinyint"`
-	CategoryCategoryId int       `gorm:"type:tinyint"`
-	FilmReferId        int       `gorm:"type:tinyint"`
-	CategoryRefer      int       `gorm:"type:tinyint"`
-}
-
-func (FilmCategory) TableName() string {
-	return "film_category"
-}
+// func (FilmCategory) TableName() string {
+// 	return "film_category"
+// }
 
 type FilmRequest struct {
 	*Film
