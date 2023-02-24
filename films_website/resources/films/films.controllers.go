@@ -166,12 +166,22 @@ func UpdateById(w http.ResponseWriter, r *http.Request) {
 	updatedFilm.FilmId = url_id
 	updatedFilm.LastUpdate = time.Now()
 
-	//db.DB.Save(&updatedFilm)
 	db.DB.Model(&updatedFilm).Preload("Categories").Save(&updatedFilm)
 
 	render.Render(w, r, NewFilmResponse(updatedFilm))
 }
 
 func FilmsByKeyword(w http.ResponseWriter, r *http.Request) {
-	// keyword := chi.URLParam(r, "keyword")
+	// keyword := strings.ToUpper(chi.URLParam(r, "keyword"))
+
+	keyword := chi.URLParam(r, "keyword")
+	var films []*Film
+
+	result := db.DB.Model(&Film{}).Where("title LIKE ? or description LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Preload("Categories").Find(&films)
+
+	if result.Error != nil {
+		render.Render(w, r, e.ErrEmptyTable(result.Error))
+		return
+	}
+	render.RenderList(w, r, NewFilmListResponse(films))
 }
