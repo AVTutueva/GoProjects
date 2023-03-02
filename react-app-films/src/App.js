@@ -2,6 +2,7 @@
 import React from "react";
 import FilmTable from "./Films/FilmTable";
 import Context from "./Films/context";
+import AddFilm from "./Films/AddFilm";
 // import axios from "axios";
 
 function App() {
@@ -30,18 +31,27 @@ function App() {
     );
   }
 
+  function addFilm(state){
+    setFilms(films.concat([
+      {
+        id: Date.now(),
+        title: state.title,
+        description: state.description
+      }
+    ])
+    )
+  }
+
 
   return (
     <Context.Provider value={{ removeFilm }}>
       <div className="wrapper">
         <h1>List of films</h1>
-
+        <AddFilm onCreate={addFilm}/>
         {films.length ? <FilmTable films={films} /> : <p>No films to show</p>}
       </div>
     </Context.Provider>
   );
 }
-
-
 
 export default App;
