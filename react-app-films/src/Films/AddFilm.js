@@ -32,12 +32,12 @@ function AddFilm({ onCreate }) {
   return (
     <form onSubmit={submitHandler}>
       <label>
-        Title:
+        Title: <br/>
         <input name="title" value={state.title} onChange={handleChange} />
         <br />
       </label>
       <label>
-        Description:
+        Description: <br/>
         <input name="description" value={state.description} onChange={handleChange} />
         <br />
       </label>
@@ -51,15 +51,3 @@ AddFilm.propTypes = {
 }
 
 export default AddFilm;
-
-//   function submitHandler(event) {
-//     event.preventDefault() // cancel updating of page
-//     if (value.title.trim() && value.description.trim()){
-//         onCreate(value)
-//     }
-
-//   }
-
-// function handleChange (event) {
-//     setValue({...value, [event.target.name]: event.target.value});
-// };

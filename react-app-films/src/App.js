@@ -1,17 +1,19 @@
+import React, {useEffect} from "react";
 // import React, {useEffect, useState} from "react";
-import React from "react";
 import FilmTable from "./Films/FilmTable";
 import Context from "./Films/context";
 import AddFilm from "./Films/AddFilm";
-// import axios from "axios";
+import axios from "axios";
 
 function App() {
 
-  const [films, setFilms] = React.useState([
-    { id: 1, title: "Titanic", description: "simple desc1" },
-    { id: 2, title: "Avatar", description: "simple desc2" },
-    { id: 3, title: "The Lord of the Rings", description: "simple desc3" },
-  ]);
+  const [films, setFilms] = React.useState({});
+  // const [films, setFilms] = React.useState([
+  //   { id: 1, title: "Titanic", description: "simple desc1" },
+  //   { id: 2, title: "Avatar", description: "simple desc2" },
+  //   { id: 3, title: "The Lord of the Rings", description: "simple desc3" },
+  // ]);
+
 
 
   // const fetchData = () => {
@@ -19,10 +21,35 @@ function App() {
   //         .then((response) => console.log(response.data));
   // }
 
-  // useEffect(() => {
-  //   fetchData();
-  // },[])
+  useEffect(() => {
+    axios.get("http://localhost:8080/films").then((response) =>
+      //console.log(response.data);
+      // setFilms(
 
+      // )
+      setFilms(
+      response.data.map(function (element) {
+        const new_film = {
+          id: element.FilmId,
+          title: element.Title,
+          description: element.Description,
+        };
+        return new_film
+      })
+      )
+      // forEach(function (element) {
+      //   const new_film = {
+          // id: element.FilmId,
+          // title: element.Title,
+          // description: element.Description,
+      //   };
+
+      //   console.log(new_film);
+
+      //   setFilms(films.concat(new_film));
+      // })
+    );
+  }, []);
 
   function removeFilm(id) {
     setFilms(
