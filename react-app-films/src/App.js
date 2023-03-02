@@ -14,19 +14,8 @@ function App() {
   //   { id: 3, title: "The Lord of the Rings", description: "simple desc3" },
   // ]);
 
-
-
-  // const fetchData = () => {
-  //   return axios.get("http://localhost:8080/films")
-  //         .then((response) => console.log(response.data));
-  // }
-
   useEffect(() => {
     axios.get("http://localhost:8080/films").then((response) =>
-      //console.log(response.data);
-      // setFilms(
-
-      // )
       setFilms(
       response.data.map(function (element) {
         const new_film = {
@@ -37,25 +26,24 @@ function App() {
         return new_film
       })
       )
-      // forEach(function (element) {
-      //   const new_film = {
-          // id: element.FilmId,
-          // title: element.Title,
-          // description: element.Description,
-      //   };
-
-      //   console.log(new_film);
-
-      //   setFilms(films.concat(new_film));
-      // })
     );
   }, []);
 
   function removeFilm(id) {
-    setFilms(
-      // to future: remove film from database, get new list of films and return
-      films.filter((film) => film.id !== id)
-    );
+    try {
+      const request_to_delete = `http://localhost:8080/films/${id}`;
+      fetch(request_to_delete, {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          console.log(data);
+          setFilms(films.filter((film) => film.id !== id));
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function addFilm(state){
