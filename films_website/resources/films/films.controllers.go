@@ -89,9 +89,9 @@ func DeleteById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// remove associations
+	db.DB.Model(&film).Association("Categories").Clear()
 	if len(film.Categories) > 0 {
-		// remove associations
-		db.DB.Model(&film).Association("Categories").Clear()
 
 		// remove film_category pairs
 		result_del := db.DB.Delete(&film_by_category)
@@ -142,9 +142,9 @@ func UpdateById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// remove associations
+	db.DB.Model(&updatedFilm).Association("Categories").Clear()
 	if len(film_by_category) > 0 {
-		// remove associations
-		db.DB.Model(&updatedFilm).Association("Categories").Clear()
 
 		// remove film_category pairs
 		result_del := db.DB.Delete(&film_by_category)
