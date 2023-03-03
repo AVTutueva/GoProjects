@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 // import React, {useEffect, useState} from "react";
 import FilmTable from "./Films/FilmTable";
 import Context from "./Films/context";
@@ -6,7 +6,6 @@ import AddFilm from "./Films/AddFilm";
 import axios from "axios";
 
 function App() {
-
   const [films, setFilms] = React.useState({});
   // const [films, setFilms] = React.useState([
   //   { id: 1, title: "Titanic", description: "simple desc1" },
@@ -14,22 +13,23 @@ function App() {
   //   { id: 3, title: "The Lord of the Rings", description: "simple desc3" },
   // ]);
 
-  useEffect(() => {
+   useEffect(() => {
     axios.get("http://localhost:8080/films").then((response) =>
       setFilms(
-      response.data.map(function (element) {
-        const new_film = {
-          id: element.FilmId,
-          title: element.Title,
-          description: element.Description,
-        };
-        return new_film
-      })
+        response.data.map(function (element) {
+          const new_film = {
+            id: element.FilmId,
+            title: element.Title,
+            description: element.Description,
+          };
+          return new_film;
+        })
       )
     );
   }, []);
 
   function removeFilm(id) {
+    // make error handling
     try {
       const request_to_delete = `http://localhost:8080/films/${id}`;
       fetch(request_to_delete, {
@@ -38,7 +38,6 @@ function App() {
       })
         .then((data) => data.json())
         .then((data) => {
-          console.log(data);
           setFilms(films.filter((film) => film.id !== id));
         });
     } catch (error) {
@@ -46,23 +45,47 @@ function App() {
     }
   }
 
-  function addFilm(state){
-    setFilms(films.concat([
-      {
-        id: Date.now(),
-        title: state.title,
-        description: state.description
-      }
-    ])
-    )
-  }
+  // adding a new film
+  function addFilm(state) {
+    const jsonFilm = {
+      Title: state.title,
+      Description: state.description,
+      ReleaseYear: 2020,
+      LanguageId: 1,
+      OriginalLanguageId: 0,
+      RentalDuration: 7,
+      RentalRate: 2.99,
+      Length: 136,
+      ReplacementCost: 14.99,
+      Rating: "PG",
+      SpecialFeatures: "Trailers",
+      Categories: [],
+    };
 
+    fetch("http://localhost:8080/films/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonFilm),
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        setFilms(
+          films.concat([{
+              id: data.FilmId,
+              title: state.title,
+              description: state.description,
+            },])
+        );
+      });
+  }
 
   return (
     <Context.Provider value={{ removeFilm }}>
       <div className="wrapper">
         <h1>List of films</h1>
-        <AddFilm onCreate={addFilm}/>
+        <AddFilm onCreate={addFilm} />
         {films.length ? <FilmTable films={films} /> : <p>No films to show</p>}
       </div>
     </Context.Provider>
