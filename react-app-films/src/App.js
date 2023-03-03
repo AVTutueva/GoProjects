@@ -13,7 +13,7 @@ function App() {
   //   { id: 3, title: "The Lord of the Rings", description: "simple desc3" },
   // ]);
 
-   useEffect(() => {
+  useEffect(() => {
     axios.get("http://localhost:8080/films").then((response) =>
       setFilms(
         response.data.map(function (element) {
@@ -27,6 +27,7 @@ function App() {
       )
     );
   }, []);
+
 
   function removeFilm(id) {
     // make error handling
@@ -50,7 +51,7 @@ function App() {
     const jsonFilm = {
       Title: state.title,
       Description: state.description,
-      ReleaseYear: 2020,
+      ReleaseYear: parseInt(state.year),
       LanguageId: 1,
       OriginalLanguageId: 0,
       RentalDuration: 7,
@@ -62,22 +63,30 @@ function App() {
       Categories: [],
     };
 
-    fetch("http://localhost:8080/films/", {
+    fetch("http://localhost:8080/films/1", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(jsonFilm),
+    }).then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(response);
     })
-      .then((data) => data.json())
-      .then((data) => {
+    .then((response) => {
         setFilms(
           films.concat([{
-              id: data.FilmId,
+              id: response.FilmId,
               title: state.title,
               description: state.description,
             },])
         );
+      })
+      .catch((error) =>{
+        alert(error.statusText)
+        console.log("Error", error.statusText)
       });
   }
 

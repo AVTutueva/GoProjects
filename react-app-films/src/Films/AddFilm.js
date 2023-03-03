@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 function AddFilm({ onCreate }) {
   const [state, setValue] = useState({
     title: "",
-    description: ""
+    description: "",
+    year: ""
   });
 
   function handleChange(event) {
@@ -15,16 +16,43 @@ function AddFilm({ onCreate }) {
     });
   }
 
+
+  function checkInputs(state) {
+    const error = {status: false, error: ""} 
+    if (!state.title.trim()) {
+      error.status = true
+      error.error = "Titile is empty"
+      return error 
+    }
+    if (!state.description.trim()) {
+      error.status = true
+      error.error = "Desciption is empty"
+      return error
+    }
+    if (!+(state.year)){
+      error.status = true
+      error.error = "Year must be integer"
+      return error
+    }
+    if (!(state.year.length === 4)){
+      error.status = true
+      error.error = "Year must be 4 digits"
+      return error
+    }
+    return error
+  }
+
   function submitHandler(event) {
     event.preventDefault();
-    // check that both fields are filled
-    if (state.title.trim() && state.description.trim()) {
+    // check that both fields are filled and year is correct
+    const error = checkInputs(state)
+    if (!error.status) {
       onCreate(state);
-      setValue({title: "", description: ""})
-      console.log("film created");
+      setValue({title: "", description: "", year: ""})
     }
     else{
-        console.log("error")
+        alert(error.error)
+        console.log(error.error)
     }
     
   }
@@ -40,6 +68,11 @@ function AddFilm({ onCreate }) {
         Description: <br/>
         <input name="description" value={state.description} onChange={handleChange} />
         <br />
+      </label>
+      <label>
+        Year: <br/>
+        <input name="year" value={state.year} onChange={handleChange}/>
+        <br/>
       </label>
       <button type="submit">Add</button>
     </form>
