@@ -10,6 +10,7 @@ function FilmTable(props) {
         <th>№</th>
         <th>Title</th>
         <th>Description</th>
+        <th>Year</th>
       </tr>
       {props.films.map((film, index) => {
         return (

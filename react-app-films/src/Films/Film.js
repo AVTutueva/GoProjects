@@ -10,6 +10,7 @@ function SingleFilm({ film, index }) {
       <td>{index + 1}</td>
       <td>{film.title}</td>
       <td>{film.description}</td>
+      <td>{film.year}</td>
       <td>
         <button
           className="deleteButton"
