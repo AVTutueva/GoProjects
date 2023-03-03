@@ -1,6 +1,7 @@
 package films
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 	db "tsi/films_website/database"
@@ -41,8 +42,13 @@ func FilmByID(w http.ResponseWriter, r *http.Request) {
 func CreateFilm(w http.ResponseWriter, r *http.Request) {
 	// check input data
 	var data FilmRequest
-	if err := render.Bind(r, &data); err != nil {
+	// if err := render.Bind(r, &data); err != nil {
+	// 	render.Render(w, r, e.ErrInvalidRequest(err))
+	// 	return
+	// }
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		render.Render(w, r, e.ErrInvalidRequest(err))
+		return
 	}
 	film := data.Film
 
