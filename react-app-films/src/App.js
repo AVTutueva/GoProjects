@@ -28,22 +28,26 @@ function App() {
     );
   }, []);
 
-
+  // removing the film
   function removeFilm(id) {
-    // make error handling
-    try {
-      const request_to_delete = `http://localhost:8080/films/${id}`;
-      fetch(request_to_delete, {
-        method: "DELETE",
-        headers: { "content-type": "application/json" },
+    const request_to_delete = `http://localhost:8080/films/${id}`;
+    fetch(request_to_delete, {
+      method: "DELETE",
+      headers: { "content-type": "application/json" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
       })
-        .then((data) => data.json())
-        .then((data) => {
-          setFilms(films.filter((film) => film.id !== id));
-        });
-    } catch (error) {
-      console.log(error);
-    }
+      .then((response) => {
+        setFilms(films.filter((film) => film.id !== id));
+      })
+      .catch((error) => {
+        alert(error.statusText);
+        console.log(error);
+      })
   }
 
   // adding a new film
@@ -69,24 +73,27 @@ function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(jsonFilm),
-    }).then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return Promise.reject(response);
     })
-    .then((response) => {
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      })
+      .then((response) => {
         setFilms(
-          films.concat([{
+          films.concat([
+            {
               id: response.FilmId,
               title: state.title,
               description: state.description,
-            },])
+            },
+          ])
         );
       })
-      .catch((error) =>{
-        alert(error.statusText)
-        console.log("Error", error.statusText)
+      .catch((error) => {
+        alert(error.statusText);
+        console.log(error);
       });
   }
 
