@@ -4,26 +4,24 @@ import Context from "./Films/context";
 import AddFilm from "./Films/AddFilm";
 import axios from "axios";
 
-
 const categories = {
-  "Action": 1,
-  "Animation": 2,
-  "Children": 3,
-  "Classics": 4,
-  "Comedy": 5,
-  "Documentary": 6,
-  "Drama": 7,
-  "Family": 8,
-  "Foreign": 9,
-  "Games": 10,
-  "Horror": 11,
-  "Music": 12,
-  "New": 13,
+  Action: 1,
+  Animation: 2,
+  Children: 3,
+  Classics: 4,
+  Comedy: 5,
+  Documentary: 6,
+  Drama: 7,
+  Family: 8,
+  Foreign: 9,
+  Games: 10,
+  Horror: 11,
+  Music: 12,
+  New: 13,
   "Sci-Fi": 14,
-  "Sports": 15,
-  "Travel": 16
-}
-
+  Sports: 15,
+  Travel: 16,
+};
 
 function App() {
   const [films, setFilms] = React.useState({});
@@ -36,7 +34,7 @@ function App() {
             id: element.FilmId,
             title: element.Title,
             description: element.Description,
-            year: element.ReleaseYear
+            year: element.ReleaseYear,
           };
           return new_film;
         })
@@ -63,14 +61,13 @@ function App() {
       .catch((error) => {
         alert(error.statusText);
         console.log(error);
-      })
+      });
   }
 
   // adding a new film
   function addFilm(state) {
-
-    console.log(categories[state.category])
-    console.log(state.category)
+    console.log(categories[state.category]);
+    console.log(state.category);
     const jsonFilm = {
       Title: state.title,
       Description: state.description,
@@ -87,10 +84,9 @@ function App() {
         {
           CategoryId: categories[state.category],
           Name: state.category,
-        }
-      ]        
+        },
+      ],
     };
-
 
     fetch("http://localhost:8080/films/", {
       method: "POST",
@@ -112,7 +108,7 @@ function App() {
               id: response.FilmId,
               title: state.title,
               description: state.description,
-              year: state.year
+              year: state.year,
             },
           ])
         );
